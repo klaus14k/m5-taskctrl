@@ -9,8 +9,9 @@ export class TaskController {
         return res.status(201).json(newTask)        
     }
 
-    public read = async (_: Request, res: Response): Promise<Response> => {
-        const allTasks = await this.taskService.read()
+    public read = async ({ query }: Request, res: Response): Promise<Response> => {
+        const category = query.category ? String(query.category) : undefined
+        const allTasks = await this.taskService.read(category)
         return res.status(200).json(allTasks)
     }
 

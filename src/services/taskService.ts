@@ -1,6 +1,6 @@
 import { prisma } from "../database/prisma"
-import { TaskCreate, TaskReturn, TaskUpdate } from "../interfaces/task.interface"
-import { taskSchema } from "../schemas/task.schema"
+import { TaskCreate, TaskRead, TaskReturn, TaskUpdate } from "../interfaces/task.interface"
+import { readTaskSchema, taskSchema } from "../schemas/task.schema"
 
 export class TaskService {
     public create = async ({category, ...payload}: TaskCreate): Promise<TaskReturn> => {
@@ -21,10 +21,17 @@ export class TaskService {
         return taskSchema.parse(newTask)
     }
 
-    public read = async (): Promise<Array<TaskReturn>> => {
-        const allTasks = await prisma.task.findMany({include: {category: true}})
+    public read = async (category?: string): Promise<Array<TaskRead>> => {
+        let query: any = {include: {category: true}}
+
+        if (category){
+            const whereField = {name: {equals: category, mode: "insensitive"}}
+            query = { ...query, where: {category: whereField} }
+        }
+
+        const allTasks = await prisma.task.findMany(query)
         
-        return taskSchema.array().parse(allTasks)
+        return readTaskSchema.array().parse(allTasks)
     }
 
     public readById = async (taskId: string): Promise<TaskReturn> => {
@@ -33,7 +40,7 @@ export class TaskService {
         return taskSchema.parse(task)
     }
 
-    public update = async (taskId: string, {...payload}: TaskUpdate): Promise<TaskReturn> => {
+    public update = async (taskId: string, payload: TaskUpdate): Promise<TaskReturn> => {
         const updatedTask = await prisma.task.update({where: {id: Number(taskId)}, data: payload})
 
         return taskSchema.parse(updatedTask)

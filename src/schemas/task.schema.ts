@@ -7,9 +7,9 @@ export const taskSchema = z.object({
     content: z.string(),
     finished: z.boolean().default(false),
     categoryId: z.number().positive().nullish(),
-    category: categorySchema.nullish()
+    // category: categorySchema.nullish()
 })
 
 export const createTaskSchema = taskSchema.omit({id: true}).extend({category: createCategorySchema})
-
+export const readTaskSchema = taskSchema.extend({category: categorySchema.nullish()}).omit({categoryId: true})
 export const updateTaskSchema = taskSchema.partial()

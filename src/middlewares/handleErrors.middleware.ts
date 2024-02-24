@@ -1,6 +1,6 @@
+import { ZodError } from "zod"
 import { NextFunction, Request, Response } from "express"
 import { AppError } from "../errors/AppError"
-import { ZodError } from "zod"
 
 class HandleErrorMiddleware {
     public static execute = (error: Error, _: Request, res: Response, __: NextFunction): Response => {
