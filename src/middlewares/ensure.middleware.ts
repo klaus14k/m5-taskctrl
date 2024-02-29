@@ -10,30 +10,32 @@ class EnsureMiddleware {
     }
 
     public taskIdExists = async (req: Request, _: Response, next: NextFunction): Promise<void> => {
-        const {taskId} = req.params
-        const foundTask = await prisma.task.findFirst({where: {id: Number(taskId)}})
+        const { id } = req.params
+        const foundTask = await prisma.task.findFirst({ where: { id: Number(id) } })
 
-        if (!foundTask){
+        if (!foundTask) {
             throw new AppError("Task not found", 404)
         }
         return next()
     }
 
     public paramCategoryIdExists = async (req: Request, _: Response, next: NextFunction): Promise<void> => {
-        const {categoryId} = req.params
-        const foundCategory = await prisma.category.findFirst({where: {id: Number(categoryId)}})
+        const { id } = req.params
+        const foundCategory = await prisma.category.findFirst({ where: { id: Number(id) } })
 
-        if (!foundCategory){
+        if (!foundCategory) {
             throw new AppError("Category not found", 404)
         }
         return next()
     }
 
     public bodyCategoryIdExists = async (req: Request, _: Response, next: NextFunction): Promise<void> => {
-        const foundCategory = await prisma.category.findFirst({where: {id: Number(req.body.categoryId)}})
-
-        if (!foundCategory){
-            throw new AppError("Category not found", 404)
+        if (req.body.categoryId) {
+            const foundCategory = await prisma.category.findFirst({ where: { id: Number(req.body.categoryId) } })
+            if (!foundCategory) {
+                throw new AppError("Category not found", 404)
+            }
+            return next()
         }
         return next()
     }

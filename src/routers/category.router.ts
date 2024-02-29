@@ -7,4 +7,4 @@ export const categoryRouter = Router()
 const controller = new CategoryController()
 
 categoryRouter.post("", ensure.validBody(createCategorySchema), controller.create)
-categoryRouter.delete("/:categoryId", ensure.paramCategoryIdExists, controller.delete)
+categoryRouter.delete("/:id", ensure.paramCategoryIdExists, controller.delete)

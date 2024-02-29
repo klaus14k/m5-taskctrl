@@ -9,7 +9,7 @@ export class CategoryService {
         return categorySchema.parse(newCategory)
     }
 
-    public delete = async (categoryId: string): Promise<void> => {
-        await prisma.category.delete({where: {id: Number(categoryId)}})
+    public delete = async (id: string): Promise<void> => {
+        await prisma.category.delete({where: {id: Number(id)}})
     }
 }

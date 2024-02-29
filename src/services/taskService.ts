@@ -3,21 +3,8 @@ import { TaskCreate, TaskRead, TaskReturn, TaskUpdate } from "../interfaces/task
 import { readTaskSchema, taskSchema } from "../schemas/task.schema"
 
 export class TaskService {
-    public create = async ({category, ...payload}: TaskCreate): Promise<TaskReturn> => {
-        if (!category){
-            const newTask = await prisma.task.create({
-                data: payload,
-                include: {category: false}
-                
-            })
-            return taskSchema.parse(newTask)
-        }
-
-        const { id } = await prisma.category.create({data: category})
-        const newTask = await prisma.task.create({
-            data: {...payload, categoryId: id},
-            include: {category: true}
-        })
+    public create = async (payload: TaskCreate): Promise<TaskReturn> => {
+        const newTask = await prisma.task.create({data: payload})
         return taskSchema.parse(newTask)
     }
 
@@ -34,19 +21,19 @@ export class TaskService {
         return readTaskSchema.array().parse(allTasks)
     }
 
-    public readById = async (taskId: string): Promise<TaskReturn> => {
-        const task = await prisma.task.findFirst({include: {category: true}, where: {id: Number(taskId)}})
+    public readById = async (id: string): Promise<TaskReturn> => {
+        const task = await prisma.task.findFirst({include: {category: true}, where: {id: Number(id)}})
 
         return taskSchema.parse(task)
     }
 
-    public update = async (taskId: string, payload: TaskUpdate): Promise<TaskReturn> => {
-        const updatedTask = await prisma.task.update({where: {id: Number(taskId)}, data: payload})
+    public update = async (id: string, payload: TaskUpdate): Promise<TaskReturn> => {
+        const updatedTask = await prisma.task.update({where: {id: Number(id)}, data: payload})
 
         return taskSchema.parse(updatedTask)
     }
 
-    public delete = async (taskId: string): Promise<void> => {
-        await prisma.task.delete({where: {id: Number(taskId)}})
+    public delete = async (id: string): Promise<void> => {
+        await prisma.task.delete({where: {id: Number(id)}})
     }
 }

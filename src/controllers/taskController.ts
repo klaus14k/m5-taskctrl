@@ -15,19 +15,19 @@ export class TaskController {
         return res.status(200).json(allTasks)
     }
 
-    public readById = async ({params: {taskId}}: Request, res: Response): Promise<Response> => {
-        const task = await this.taskService.readById(taskId)
+    public readById = async ({params: {id}}: Request, res: Response): Promise<Response> => {
+        const task = await this.taskService.readById(id)
         return res.status(200).json(task)
     }
 
     public update = async (req: Request, res: Response): Promise<Response> => {
-        const updatedTask = await this.taskService.update(req.params.taskId, req.body)
+        const updatedTask = await this.taskService.update(req.params.id, req.body)
 
         return res.status(200).json(updatedTask)
     }
 
     public delete = async (req: Request, res: Response): Promise<Response> => {
-        await this.taskService.delete(req.params.taskId)
+        await this.taskService.delete(req.params.id)
         return res.status(204).json()
     }
 }
